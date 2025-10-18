@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String
+  nif          String        @unique
+  email        String        @unique
+  password     String
+  role         UserRole      @default(CLIENT)
+  balance      Decimal       @default(0.0) @db.Decimal(10, 2)
+  services     Service[]
+  reservations Reservation[] @relation("clientReservations")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+enum UserRole {
+  CLIENT
+  PROVIDER
+  ADMIN
+}
+
+model Service {
+  id           Int           @id @default(autoincrement())
+  name         String
+  description  String?
+  price        Decimal       @db.Decimal(10, 2)
+  providerId   Int
+  provider     User          @relation(fields: [providerId], references: [id])
+  reservations Reservation[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Reservation {
+  id         Int               @id @default(autoincrement())
+  serviceId  Int
+  service    Service           @relation(fields: [serviceId], references: [id])
+  clientId   Int
+  client     User              @relation("clientReservations", fields: [clientId], references: [id])
+  status     ReservationStatus @default(PENDING)
+  pricePaid  Decimal           @db.Decimal(10, 2)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  canceledAt DateTime?
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELED
+  REFUNDED
+}
+
+model Transaction {
+  id          Int             @id @default(autoincrement())
+  fromUserId  Int?
+  toUserId    Int?
+  amount      Decimal         @db.Decimal(10, 2)
+  type        TransactionType
+  description String?
+  createdAt   DateTime        @default(now())
+}
+
+enum TransactionType {
+  RESERVATION
+  REFUND
+}
