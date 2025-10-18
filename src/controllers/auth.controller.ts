@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { PrismaClient, UserRole } from "@prisma/client";
 import { generateToken } from "../utils/jwt";
+import { debug } from "console";
 
 const prisma = new PrismaClient();
 
@@ -10,6 +11,7 @@ export class AuthController {
   static async register(req: Request, res: Response) {
     try {
       const { name, nif, email, password, role } = req.body;
+      debug("Dados recebidos para registro:", { name, nif, email, role });
 
       if (!name || !nif || !email || !password) {
         return res.status(400).json({ error: "Todos os campos são obrigatórios." });

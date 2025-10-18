@@ -5,26 +5,8 @@ import index from "./routes/index";
 
 dotenv.config();
 const app = express();
-const allowedOrigins = [
-  "*",
-  "https://seu-frontend.vercel.app",
-];
 
-app.use(cors()
-  // cors({
-  //   origin: (origin, callback) => {
-  //     if (!origin) return callback(new Error("Not allowed by CORS"));
-  //     if (allowedOrigins.includes(origin)) {
-  //       return callback(null, true);
-  //     } else {
-  //       return callback(new Error("Not allowed by CORS"));
-  //     }
-  //   },
-  //   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  //   allowedHeaders: ["Content-Type", "Authorization"]
-  // })
-);
-
+app.use(cors());
 app.use(express.json());
 app.use("/api", index);
 app.get("/api", (_, res) => {
