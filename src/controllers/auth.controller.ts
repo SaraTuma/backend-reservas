@@ -61,7 +61,7 @@ export class AuthController {
         const { emailOrNif, password } = req.body;
 
         if (!emailOrNif || !password) {
-            return res.status(400).json({ error: "E-mail/NIF e senha são obrigatórios." });
+            return res.status(400).json({ message: "E-mail/NIF e senha são obrigatórios." });
         }
 
         const isEmail = emailOrNif.includes("@");
@@ -71,12 +71,12 @@ export class AuthController {
         });
 
         if (!user) {
-        return res.status(404).json({ error: "Usuário não encontrado." });
+        return res.status(404).json({ message: "Usuário não encontrado." });
         }
 
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
-        return res.status(401).json({ error: "Senha incorreta." });
+        return res.status(401).json({ message: "Senha incorreta." });
         }
 
         const token = generateToken({
@@ -87,6 +87,7 @@ export class AuthController {
 
         return res.status(200).json({
         message: "Login bem-sucedido.",
+        status: 200,
         token,
         data: {
             user: {
