@@ -11,11 +11,11 @@ export class ServiceController {
         const { name, description, price } = req.body;
         const providerId = req.user?.id;
         if (!providerId) {
-            return res.status(401).json({ message: "Usuário não autenticado" });
+            return res.status(401).json({ message: "Usuário não autenticado" , data: []});
         }
 
         if (!name || !price) {
-            return res.status(400).json({ message: "Nome e preço são obrigatórios" });
+            return res.status(400).json({ message: "Nome e preço são obrigatórios" , data: []});
         }
 
         const service = await prisma.service.create({
@@ -30,7 +30,7 @@ export class ServiceController {
         return res.status(201).json({ message: "Serviço criado com sucesso", data:[ service ]});
     } catch (error) {
       console.error("Erro ao criar serviço:", error);
-      return res.status(500).json({ message: "Erro interno do servidor" });
+      return res.status(500).json({ message: "Erro interno do servidor", data: [] });
     }
   }
 
@@ -75,7 +75,7 @@ export class ServiceController {
       return res.json({ message: "Serviço deletado com sucesso" });
     } catch (error) {
       console.error("Erro ao deletar serviço:", error);
-      return res.status(500).json({ message: "Erro interno do servidor" });
+      return res.status(500).json({ message: "Erro interno do servidor" , data: []});
     }
   }
 
