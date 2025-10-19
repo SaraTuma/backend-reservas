@@ -126,35 +126,49 @@ export class ReservationController {
   }
 
   static async findAll(req: AuthenticatedRequest, res: Response) {
-    try {
-      const userId = req.user!.id;
-      const role = req.user!.role;
+  try {
+    const userId = req.user!.id;
+    const role = req.user!.role;
 
-      let reservations;
+    let reservations;
 
-      if (role === UserRole.CLIENT) {
-        reservations = await prisma.reservation.findMany({
-          where: { clientId: userId },
-          include: { service: { include: { provider: true } } },
-        });
-      } else if (role === UserRole.PROVIDER) {
-        reservations = await prisma.reservation.findMany({
-          where: { service: { providerId: userId } },
-          include: { client: true, service: true },
-        });
-      } else {
-        reservations = await prisma.reservation.findMany({
-          include: { client: true, service: { include: { provider: true } } },
-        });
-      }
-
-      return res.status(200).json({data: reservations , message: "Enviado com sucesso"});
-
-    } catch (error) {
-      console.error("Erro ao listar reservas:", error);
-      return res.status(500).json({ message: "Erro interno do servidor", data:[] });
+    if (role === UserRole.CLIENT) {
+      reservations = await prisma.reservation.findMany({
+        where: { clientId: userId },
+        include: {
+          service: { include: { provider: true } },
+          client: true,
+        },
+      });
+    } else if (role === UserRole.PROVIDER) {
+      reservations = await prisma.reservation.findMany({
+        where: { service: { providerId: userId } },
+        include: { client: true, service: { include: { provider: true } } },
+      });
+    } else {
+      reservations = await prisma.reservation.findMany({
+        include: { client: true, service: { include: { provider: true } } },
+      });
     }
+
+    const formattedReservations = reservations.map(r => ({
+      id: r.id,
+      clientId: r.clientId,
+      clientName: r.client?.name ?? "Desconhecido",
+      serviceId: r.serviceId,
+      serviceName: r.service?.name ?? "Desconhecido",
+      status: r.status,
+      pricePaid: r.pricePaid ?? 0,
+      createdAt: r.createdAt,
+    }));
+
+    return res.status(200).json({ data: formattedReservations, message: "Enviado com sucesso" });
+  } catch (error) {
+    console.error("Erro ao listar reservas:", error);
+    return res.status(500).json({ message: "Erro interno do servidor", data: [] });
   }
+}
+
 
   static async updateStatus(req: AuthenticatedRequest, res: Response) {
     try {
