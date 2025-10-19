@@ -23,7 +23,7 @@ export class TransactionController {
         });
       }
 
-      return res.json({ data: transactions , message: "Enviado com sucesso"});
+      return res.status(200).json({ data: transactions , message: "Enviado com sucesso"});
     } catch (error) {
       console.error("Erro ao buscar transações:", error);
       return res.status(500).json({ message: "Erro ao buscar transações" });
