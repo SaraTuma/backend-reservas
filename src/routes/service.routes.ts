@@ -5,6 +5,7 @@ import { ServiceController } from "../controllers/service.controller";
 
 const router = Router();
 router.get("/", authenticate,authorize("findAllService"), ServiceController.findAll);
+router.get("/:id", authenticate, authorize("findByIdService"), ServiceController.findById);
 router.post("/", authenticate, authorize("createService"), ServiceController.create);
 router.put("/:id", authenticate, authorize("updateService"), ServiceController.update);
 router.delete("/:id", authenticate, authorize("deleteService"), ServiceController.delete);

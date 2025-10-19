@@ -41,6 +41,39 @@ export class UserController {
     }
   }
 
+  static async findById(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        return res.status(400).json({ message: "ID do usuário é obrigatório" , data:[]});
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { id: Number(id) }, 
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          nif: true,
+          role: true,
+          balance: true,
+          createdAt: true,
+        },
+      });
+
+      if (!user) {
+        return res.status(404).json({ message: "Usuário não encontrado" , data:[]});
+      }
+
+      return res.json({ message: "Usuário encontrado com sucesso.", data: [user] });
+    } catch (error) {
+      console.error("Erro ao buscar usuário por ID:", error);
+      return res.status(500).json({ message: "Erro interno do servidor", data:[] });
+    }
+  }
+
+
    static async getClientsByProvider(req: AuthenticatedRequest, res: Response) {
     const { id } = req.params;
     try {

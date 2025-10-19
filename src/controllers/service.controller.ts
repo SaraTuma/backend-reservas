@@ -103,4 +103,33 @@ export class ServiceController {
   }
 }
 
+  static async findById(req: AuthenticatedRequest, res: Response) {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        return res.status(400).json({ message: "ID do serviço é obrigatório" , data:[]});
+      }
+
+      const service = await prisma.service.findUnique({
+        where: { id: Number(id) },
+        include: {
+          provider: {
+            select: { id: true, name: true, email: true },
+          },
+        },
+      });
+
+      if (!service) {
+        return res.status(404).json({ message: "Serviço não encontrado" , data:[]});
+      }
+
+      return res.json({ message: "Serviço encontrado com sucesso.", data: service });
+    } catch (error) {
+      console.error("Erro ao buscar serviço por ID:", error);
+      return res.status(500).json({ message: "Erro interno do servidor", data:[] });
+    }
+  }
+
+
 }

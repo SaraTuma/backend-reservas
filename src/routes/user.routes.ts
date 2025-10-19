@@ -5,6 +5,7 @@ import { UserController } from "../controllers/user.controller";
 
 const router = Router();
 router.get("/", authenticate,authorize("findAllUser"), UserController.findAll);
+router.get("/:id", authenticate, authorize("findByIdUder"), UserController.findById);
 //router.put("/:id", authenticate, authorize("updateUser"), UserController.update);
 router.delete("/:id", authenticate, authorize("deleteUser"), UserController.delete);
 router.get("/:id", authenticate, authorize("lientsByProviderUser"), UserController.getClientsByProvider);
