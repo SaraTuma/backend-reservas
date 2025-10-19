@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { PrismaClient, UserRole } from "@prisma/client";
 import { generateToken } from "../utils/jwt";
-import { debug } from "console";
 
 const prisma = new PrismaClient();
 
@@ -11,10 +10,9 @@ export class AuthController {
   static async register(req: Request, res: Response) {
     try {
       const { name, nif, email, password, role } = req.body;
-      debug("Dados recebidos para registro:", { name, nif, email, role });
 
       if (!name || !nif || !email || !password) {
-        return res.status(400).json({ error: "Todos os campos são obrigatórios." });
+        return res.status(400).json({ message: "Todos os campos são obrigatórios." });
       }
 
       const existingUser = await prisma.user.findFirst({
@@ -22,7 +20,7 @@ export class AuthController {
       });
 
       if (existingUser) {
-        return res.status(400).json({ error: "NIF ou email já estão registrados." });
+        return res.status(400).json({ message: "NIF ou email já estão registrados."+existingUser.name });
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -48,11 +46,11 @@ export class AuthController {
 
       return res.status(201).json({
         message: "Usuário criado com sucesso.",
-        user: newUser,
+        status:201,
+        data: {user: newUser},
       });
     } catch (error) {
-      console.error("Erro ao registrar usuário:", error);
-      return res.status(500).json({ error: "Erro interno do servidor." });
+      return res.status(500).json({ message: "Erro interno do servidor." });
     }
   }
 
