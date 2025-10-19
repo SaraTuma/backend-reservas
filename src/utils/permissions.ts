@@ -5,7 +5,8 @@ export const permissions: Record<string, string[]> = {
     "viewServices",
     "viewOwnReservations",
     "findAllService",
-    "viewStats"
+    "viewStats",
+    "findAllTransactions"
   ],
   PROVIDER: [
     "createService",
@@ -14,7 +15,8 @@ export const permissions: Record<string, string[]> = {
     "viewMyReservations",
     "findAllService",
     "lientsByProviderUser",
-    "viewStats"
+    "viewStats",
+    "findAllTransactions"
   ],
   ADMIN: ["*"], 
 };

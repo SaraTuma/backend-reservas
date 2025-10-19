@@ -23,7 +23,6 @@ export class ReservationController {
       }
 
       const result = await prisma.$transaction(async (prisma) => {
-        // Deduzir saldo do cliente
         await prisma.user.update({
           where: { id: clientId },
           data: { balance: { decrement: service.price } },
