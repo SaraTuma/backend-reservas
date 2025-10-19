@@ -102,6 +102,6 @@ export class AuthController {
         console.error("Erro no login:", error);
         return res.status(500).json({ error: "Erro interno do servidor." });
     }
-    }
+  }
 
 }

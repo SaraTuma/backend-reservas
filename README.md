@@ -22,9 +22,89 @@ O backend está **deployado no Render** e pronto para ser consumido pelo fronten
 O backend disponibiliza os seguintes recursos:
 
 ### Usuários
-- `GET /api/users` – Lista todos os usuários (Admin) ou clientes de um Provider (Provider)  
-- `POST /api/auth/register` – Criar um usuário  
+
 - `POST /api/auth/login` – Fazer o login
+    Request Body (exemplo):
+```bash
+{
+    "emailOrNif": "igor@test.com",
+    "password": "123456"
+}
+
+```
+        
+    Response:
+```bash
+{
+            "message": "Login bem-sucedido.",
+            "status": 200,
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+            "data": {
+                "user": {
+                "id": 1,
+                "name": "igor@test.com",
+                "email": "maria@email.com",
+                "nif": "123456789",
+                "role": "ADMIN",
+                "balance": 0
+                }
+            }
+        }
+
+```
+        
+    Status Codes:
+
+        200 – Login bem-sucedido
+
+        400 – Campos ausentes
+
+        404 – Usuário não encontrado
+
+        401 – Senha incorreta
+
+- `POST /api/auth/register` – Criar um usuário  
+    Request Body (exemplo):
+```bash
+ {
+        "name": "Maria Silva",
+        "nif": "123456789",
+        "email": "maria@email.com",
+        "password": "123456",
+        "role": "CLIENT"
+        }
+
+```
+       
+    Response:
+```bash
+ {
+            "message": "Usuário criado com sucesso.",
+            "status": 201,
+            "data": {
+                "user": {
+                "id": 1,
+                "name": "Maria Silva",
+                "role": "CLIENT",
+                "email": "maria@email.com",
+                "balance": 0
+                }
+            }
+        }
+
+```
+       
+    Status Codes:
+
+        201 – Usuário criado
+
+        400 – Campos ausentes ou NIF/email já existente
+
+        500 – Erro interno
+
+
+- `GET /api/users` – Lista todos os usuários (Admin) ou clientes de um Provider (Provider)  
+
 - `PUT /api/users/:id` – Atualizar usuário  
 - `DELETE /api/users/:id` – Excluir usuário  
 
