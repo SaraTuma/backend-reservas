@@ -1,6 +1,6 @@
-# Backend – [Nome do Projeto]
+# Backend – Plataforma de reservas
 
-Este repositório contém o backend da aplicação [Nome do Projeto], responsável por fornecer a API para gerenciamento de usuários, serviços, reservas e transações.  
+Este repositório contém o backend da Plataforma de reservas, responsável por fornecer a API para gerenciamento de usuários, serviços, reservas e transações.  
 
 O backend está **deployado no Render** e pronto para ser consumido pelo frontend.
 
@@ -11,9 +11,9 @@ O backend está **deployado no Render** e pronto para ser consumido pelo fronten
 - Node.js
 - Express
 - Prisma ORM
-- PostgreSQL (ou o banco que você usou)
-- TypeScript (opcional)
-- Zod / Joi (validação, se aplicável)
+- PostgreSQL
+- TypeScript
+- Joi (validação, se aplicável)
 
 ---
 
