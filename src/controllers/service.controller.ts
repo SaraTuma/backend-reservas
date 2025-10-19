@@ -124,7 +124,7 @@ export class ServiceController {
         return res.status(404).json({ message: "Serviço não encontrado" , data:[]});
       }
 
-      return res.json({ message: "Serviço encontrado com sucesso.", data: service });
+      return res.json({ message: "Serviço encontrado com sucesso.", data: [service] });
     } catch (error) {
       console.error("Erro ao buscar serviço por ID:", error);
       return res.status(500).json({ message: "Erro interno do servidor", data:[] });
