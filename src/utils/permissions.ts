@@ -11,7 +11,8 @@ export const permissions: Record<string, string[]> = {
     "updateService",
     "deleteService",
     "viewMyReservations",
-    "findAllService"
+    "findAllService",
+    "lientsByProviderUser"
   ],
   ADMIN: ["*"], 
 };
