@@ -5,7 +5,6 @@ import { AuthenticatedRequest } from "../types/express";
 export class ServiceController {
     //Padronizar o retorno da api com a mesma estrutura de retorno {message:string, data: []}
     //Melhorar as validacoes dos dados de entrada
-  // Criar um serviço (somente PROVIDER)
   static async create(req: AuthenticatedRequest, res: Response) {
     try {
         const { name, description, price } = req.body;
@@ -79,16 +78,28 @@ export class ServiceController {
     }
   }
 
-  static async findAll(req: Request, res: Response) {
-    try {
-      const services = await prisma.service.findMany({
+  static async findAll(req: AuthenticatedRequest, res: Response) {
+  try {
+    const user = req.user;
+
+    let services;
+
+    if (user?.role === "PROVIDER") {
+      services = await prisma.service.findMany({
+        where: { providerId: user?.id },
         include: { provider: { select: { id: true, name: true, email: true } } },
       });
-
-      return res.json({message: "Requisição realizada com sucesso.", data:services});
-    } catch (error) {
-      console.error("Erro ao listar serviços:", error);
-      return res.status(500).json({ message: "Erro interno do servidor" });
+    } else {
+      services = await prisma.service.findMany({
+        include: { provider: { select: { id: true, name: true, email: true } } },
+      });
     }
+
+    return res.json({ message: "Requisição realizada com sucesso.", data: services });
+  } catch (error) {
+    console.error("Erro ao listar serviços:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
   }
+}
+
 }
