@@ -72,7 +72,7 @@ export class ReservationController {
       const reservation = await prisma.reservation.findUnique({ where: { id: Number(id) } });
       if (!reservation) return res.status(404).json({ message: "Reserva não encontrada" });
 
-      if (reservation.clientId !== clientId) {
+      if (req.user?.role !==UserRole.ADMIN && reservation.clientId !== clientId) {
         return res.status(403).json({ message: "Você não pode cancelar esta reserva" });
       }
 
@@ -80,7 +80,6 @@ export class ReservationController {
         return res.status(400).json({ message: "Reserva já cancelada" });
       }
 
-      // Atualizar reserva e reembolsar saldo
       const updatedReservation = await prisma.$transaction(async (prisma) => {
         // Reembolsar cliente
         await prisma.user.update({
@@ -103,7 +102,6 @@ export class ReservationController {
           data: { status: ReservationStatus.CANCELED, canceledAt: new Date() },
         });
 
-          // Registrar transação de reembolso
         await prisma.transaction.create({
             data: {
             fromUserId: service?.providerId,
