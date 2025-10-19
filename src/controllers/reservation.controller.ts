@@ -148,11 +148,11 @@ export class ReservationController {
         });
       }
 
-      return res.json({ reservations });
+      return res.status(200).json({data: reservations , message: "Enviado com sucesso"});
 
     } catch (error) {
       console.error("Erro ao listar reservas:", error);
-      return res.status(500).json({ message: "Erro interno do servidor" });
+      return res.status(500).json({ message: "Erro interno do servidor", data:[] });
     }
   }
 
