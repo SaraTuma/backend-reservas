@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { prisma } from "../config/prisma";
 import { AuthenticatedRequest } from "../middlewares/authenticate";
-import { Prisma, ReservationStatus, TransactionType, UserRole } from "@prisma/client";
+import { ReservationStatus, TransactionType, UserRole } from "@prisma/client";
 
 export class ReservationController {
 
@@ -18,8 +18,8 @@ export class ReservationController {
       const client = await prisma.user.findUnique({ where: { id: clientId } });
       if (!client) return res.status(404).json({ error: "Cliente não encontrado" });
 
-      if (client.balance <= service.price) {
-        return res.status(400).json({ error: "Saldo insuficiente : "+client.balance +" para o valor de: "+service.price });
+      if (Number(client.balance) < Number(service.price)) {
+        return res.status(400).json({ error: "Saldo insuficiente para realizar a reserva" });
       }
 
       const result = await prisma.$transaction(async (prisma) => {
