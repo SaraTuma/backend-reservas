@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
 import { AuthenticatedRequest } from "../types/express";
+import { UserRole } from "@prisma/client";
 
 export class ServiceController {
     //Padronizar o retorno da api com a mesma estrutura de retorno {message:string, data: []}
@@ -42,7 +43,7 @@ export class ServiceController {
       const service = await prisma.service.findUnique({ where: { id: Number(id) } });
       if (!service) return res.status(404).json({ error: "Serviço não encontrado" });
 
-      if (service.providerId !== providerId) {
+      if (req.user?.role === UserRole.PROVIDER && service.providerId !== providerId) {
         return res.status(403).json({ error: "Você não pode atualizar este serviço" });
       }
 
@@ -84,7 +85,7 @@ export class ServiceController {
 
     let services;
 
-    if (user?.role === "PROVIDER") {
+    if (user?.role === UserRole.PROVIDER) {
       services = await prisma.service.findMany({
         where: { providerId: user?.id },
         include: { provider: { select: { id: true, name: true, email: true } } },
