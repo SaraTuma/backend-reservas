@@ -19,7 +19,7 @@ export class ReservationController {
       if (!client) return res.status(404).json({ error: "Cliente não encontrado" });
 
       if (client.balance <= service.price) {
-        return res.status(400).json({ error: "Saldo insuficiente" });
+        return res.status(400).json({ error: "Saldo insuficiente : "+client.balance +" para o valor de: "+service.price });
       }
 
       const result = await prisma.$transaction(async (prisma) => {
